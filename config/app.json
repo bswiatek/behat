@@ -1,0 +1,6 @@
+{
+  "host": "localhost",
+  "schema": "bdd_db_test",
+  "user": "root",
+  "password": "bartek15"
+}

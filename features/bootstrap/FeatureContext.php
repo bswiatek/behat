@@ -81,10 +81,11 @@ class FeatureContext implements Context, SnippetAcceptingContext
 
     private function executeQuery(string $query)
     {
+        $empty = empty($this->config['password']);
         $removeSchemaCommand = sprintf(
             'mysql -u %s %s -h %s -e "%s"',
             $this->config['user'],
-            empty($this->config['password']) ? '' : "-p($this->config['password']",
+            "-p" . $this->config['password'],
             $this->config['host'],
             $query
         );
