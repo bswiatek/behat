@@ -15,3 +15,27 @@ Feature: Setup
       """
       Latest version applied is 0.
       """
+
+  Scenario: Schema does not exists and I have migrations
+    Given I have migration file 1:
+    """
+    CREATE TABLE test1(id INT);
+    """
+    And I have migration file 2:
+    """
+    CREATE TABLE test2(id INT);
+    """
+    When I run the migrations script
+    Then I should only have the following tables:
+      | migrations |
+      | test1      |
+      | test2      |
+    And I should have the following migrations:
+      | 1 | success |
+      | 2 | success |
+    And I should get:
+      """
+      Latest version applied is 0.
+      Applied migration 1 successfully.
+      Applied migration 2 successfully.
+      """

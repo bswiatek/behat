@@ -90,4 +90,39 @@ class FeatureContext implements Context, SnippetAcceptingContext
         );
         exec($removeSchemaCommand);
     }
+
+    /**
+     * @Given I have migration file :version:
+     */
+    public function iHaveMigrationFile(string $version, PyStringNode $file)
+    {
+        $filePath = __DIR__ . "/../../db/migrations/$version.sql";
+        file_put_contents($filePath, $file->getRaw());
+    }
+
+    /**
+     * @Then I should only have the following tables:
+     */
+    public function iShouldOnlyHaveTheFollowingTables(TableNode $tables)
+    {
+        $tablesInDb = $this->getDb()
+            ->query('SHOW TABLES')
+            ->fetchAll(PDO::FETCH_NUM);
+
+        assertEquals($tablesInDb, array_values($tables->getRows()));
+    }
+
+    /**
+     * @Then I should have the following migrations:
+     */
+    public function iShouldHaveTheFollowingMigrations(TableNode $migrations)
+    {
+        $query = 'SELECT version, status FROM migrations';
+        $migrationsInDb = $this->getDb()
+            ->query($query)
+            ->fetchAll(PDO::FETCH_NUM);
+
+        assertEquals($migrations->getRows(), $migrationsInDb);
+    }
+
 }
