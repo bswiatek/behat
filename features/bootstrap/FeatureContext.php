@@ -125,4 +125,27 @@ class FeatureContext implements Context, SnippetAcceptingContext
         assertEquals($migrations->getRows(), $migrationsInDb);
     }
 
+    /**
+     * @Given I have the bdd_db_test
+     */
+    public function iHaveTheBddDbTest()
+    {
+        $this->executeQuery('CREATE SCHEMA bdd_db_test');
+    }
+
+    /**
+     * @Given I have migration :version
+     */
+    public function iHaveMigration($version)
+    {
+        $this->getDb()->exec(file_get_contents(__DIR__ . "/../../migrations/setup.sql"));
+
+        $query = <<<SQL
+INSERT INTO migrations (version, status)
+VALUES (:version, 'success')
+SQL;
+        $this->getDb()
+            ->prepare($query)
+            ->execute(['version' => $version]);
+    }
 }
